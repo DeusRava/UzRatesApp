@@ -1,0 +1,64 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Setup React Native Android project
+        run: |
+          npx @react-native-community/cli@13 init TempRN --version 0.73.6 --skip-install --directory /tmp/TempRN
+
+          # Copy Android project and config files
+          cp -r /tmp/TempRN/android ./android
+          cp /tmp/TempRN/babel.config.js ./babel.config.js 2>/dev/null || true
+          cp /tmp/TempRN/metro.config.js ./metro.config.js 2>/dev/null || true
+
+          # Fix app name in all Android files
+          sed -i "s/TempRN/UzRatesApp/g" android/app/src/main/res/values/strings.xml
+          sed -i "s/TempRN/UzRatesApp/g" android/settings.gradle
+          sed -i "s/TempRN/UzRatesApp/g" android/app/build.gradle
+          sed -i "s/com.temprn/com.uzratesapp/g" android/app/build.gradle
+          sed -i "s/com.temprn/com.uzratesapp/g" android/app/src/main/AndroidManifest.xml
+          find android/app/src -name "*.java" -o -name "*.kt" | xargs sed -i "s/TempRN/UzRatesApp/g" 2>/dev/null || true
+          find android/app/src -name "*.java" -o -name "*.kt" | xargs sed -i "s/com.temprn/com.uzratesapp/g" 2>/dev/null || true
+
+          # index.js — используем свой из репозитория (уже есть)
+          # НЕ копируем из шаблона, чтобы не перезаписать
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Build debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon -x lint
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: UzRatesApp-debug
+          path: android/app/build/outputs/apk/debug/*.apk
+          retention-days: 30
