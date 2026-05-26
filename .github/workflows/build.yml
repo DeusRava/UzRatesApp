@@ -35,6 +35,7 @@ jobs:
           cp /tmp/TempRN/metro.config.js ./metro.config.js 2>/dev/null || true
           sed -i "s/TempRN/UzRatesApp/g" android/app/src/main/res/values/strings.xml
           sed -i "s/TempRN/UzRatesApp/g" android/settings.gradle
+          sed -i "s/TempRN/UzRatesApp/g" index.js
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
