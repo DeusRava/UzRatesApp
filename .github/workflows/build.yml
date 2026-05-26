@@ -33,9 +33,7 @@ jobs:
           cp -r /tmp/TempRN/android ./android
           cp /tmp/TempRN/babel.config.js ./babel.config.js 2>/dev/null || true
           cp /tmp/TempRN/metro.config.js ./metro.config.js 2>/dev/null || true
-          sed -i "s/TempRN/UzRatesApp/g" android/app/src/main/res/values/strings.xml
-          sed -i "s/TempRN/UzRatesApp/g" android/settings.gradle
-          sed -i "s/TempRN/UzRatesApp/g" index.js
+          find android -type f \( -name "*.xml" -o -name "*.kt" -o -name "*.java" -o -name "*.gradle" \) | xargs sed -i "s/TempRN/UzRatesApp/g"
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
