@@ -15,15 +15,6 @@ export interface Rate {
   date: string;
 }
 
-export const CURRENCY_FLAGS: Record<string, string> = {
-  USD: '🇺🇸', EUR: '🇪🇺', RUB: '🇷🇺', GBP: '🇬🇧',
-  CNY: '🇨🇳', JPY: '🇯🇵', CHF: '🇨🇭', KZT: '🇰🇿',
-  KGS: '🇰🇬', TRY: '🇹🇷', AED: '🇦🇪', UAH: '🇺🇦',
-  CAD: '🇨🇦', AUD: '🇦🇺', SEK: '🇸🇪', NOK: '🇳🇴',
-  DKK: '🇩🇰', PLN: '🇵🇱', SGD: '🇸🇬', HKD: '🇭🇰',
-  INR: '🇮🇳', BRL: '🇧🇷', MYR: '🇲🇾', THB: '🇹🇭',
-};
-
 export const MAIN_CURRENCIES = ['USD', 'EUR', 'RUB', 'GBP', 'CNY', 'KZT', 'TRY', 'AED', 'JPY', 'CHF'];
 
 export async function fetchRates(forceRefresh = false): Promise<Rate[]> {
